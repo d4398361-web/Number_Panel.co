@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="color-scheme" content="dark">
+<title>PREX | Level Up Booster</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<style>
+:root {
+    --bg-deep: #08090d;
+    --bg-card: rgba(20, 23, 31, 0.72);
+    --bg-card-hover: rgba(28, 32, 42, 0.88);
+    --border: rgba(255, 255, 255, 0.06);
+    --border-strong: rgba(255, 255, 255, 0.1);
+    --accent: #6366f1;
+    --accent-2: #8b5cf6;
+    --accent-cyan: #06b6d4;
+    --accent-green: #10b981;
+    --accent-amber: #f59e0b;
+    --accent-rose: #f43f5e;
+    --text-main: #e8eaed;
+    --text-dim: #7c8291;
+    --text-muted: #565b69;
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.35);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.5);
+    --smooth: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Outfit', sans-serif; -webkit-tap-highlight-color: transparent; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2f3a; border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: #3a4050; }
+
+html, body {
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--bg-deep);
+    color: var(--text-main);
+    overflow-x: hidden;
+}
+
+body { display: flex; flex-direction: column; }
+
+.ambient-bg {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+    background:
+        radial-gradient(ellipse 80% 50% at 50% -10%, rgba(99,102,241,0.08), transparent),
+        radial-gradient(ellipse 60% 50% at 100% 100%, rgba(139,92,246,0.06), transparent),
+        var(--bg-deep);
+}
+.grid-overlay {
+    position: absolute; inset: 0;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000, transparent);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000, transparent);
+}
+
+.topbar {
+    width: 100%; height: 60px;
+    background: rgba(12, 14, 19, 0.92); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border); padding: 0 18px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 80;
+}
+.brand { display: flex; align-items: center; gap: 11px; }
+.brand-icon {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 15px; color: #fff; box-shadow: 0 4px 14px rgba(99,102,241,0.3);
+}
+.brand-name { font-size: 16px; font-weight: 800; letter-spacing: 3px; color: #fff; }
+.brand-sub { font-size: 9px; color: var(--text-muted); letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
+
+.main-wrapper { flex: 1; min-width: 0; display: flex; flex-direction: column; padding: 24px; max-width: 1200px; margin: 0 auto; width: 100%; }
+
+.page-header {
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 22px;
+    flex-wrap: wrap; gap: 12px;
+}
+.page-title { font-size: 22px; font-weight: 800; letter-spacing: 0.5px; color: #fff; }
+.page-subtitle { color: var(--text-muted); font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+
+.btn {
+    padding: 9px 15px; border-radius: var(--radius-sm); border: 1px solid var(--border-strong);
+    background: rgba(255,255,255,0.03); color: var(--text-main);
+    font-size: 11px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase;
+    cursor: pointer; transition: var(--smooth); display: inline-flex; align-items: center; gap: 7px;
+    white-space: nowrap;
+}
+.btn:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.18); }
+.btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; border: none; box-shadow: 0 4px 14px rgba(99,102,241,0.25); }
+.btn-primary:hover { filter: brightness(1.1); }
+.btn-danger { background: linear-gradient(135deg, var(--accent-rose), #e11d48); color: #fff; border: none; }
+
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.stat-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px; position: relative; overflow: hidden; transition: var(--smooth);
+}
+.stat-card::before {
+    content: ''; position: absolute; top: 0; right: 0; width: 3px; height: 100%;
+    background: var(--accent); border-radius: var(--radius) 0 0 var(--radius);
+}
+.stat-card.cyan::before { background: var(--accent-cyan); }
+.stat-card.green::before { background: var(--accent-green); }
+.stat-card.rose::before { background: var(--accent-rose); }
+.stat-val { font-size: 25px; font-weight: 800; font-family: 'JetBrains Mono', monospace; margin: 4px 0; color: #fff; letter-spacing: -0.5px; }
+.stat-label { color: var(--text-dim); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; }
+
+.node-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; }
+.node-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px; transition: var(--smooth);
+}
+.node-card:hover { border-color: rgba(99,102,241,0.3); background: var(--bg-card-hover); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.acc-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.acc-id { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.acc-avatar {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: rgba(99,102,241,0.12); border: 1px solid rgba(99,102,241,0.2);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--accent); flex-shrink: 0; font-size: 14px;
+}
+.acc-name { font-size: 13px; font-weight: 700; color: #fff; }
+.status-badge {
+    padding: 4px 9px; border-radius: 6px; font-size: 9px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid; flex-shrink: 0;
+}
+.acc-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 12px 0; }
+.metric-box {
+    padding: 9px 6px; border-radius: var(--radius-sm);
+    background: rgba(0,0,0,0.35); border: 1px solid var(--border);
+    text-align: center;
+}
+.metric-box span { display: block; color: var(--text-muted); font-size: 8.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+.metric-box strong { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #fff; }
+.progress-track { height: 5px; background: rgba(0,0,0,0.4); border-radius: 6px; overflow: hidden; margin: 6px 0; border: 1px solid var(--border); }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); width: 0%; transition: width 0.5s ease; border-radius: 6px; }
+.acc-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+.act-btn {
+    width: 32px; height: 32px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border-strong); background: rgba(255,255,255,0.03);
+    color: var(--text-dim); cursor: pointer; transition: var(--smooth);
+    display: flex; align-items: center; justify-content: center;
+}
+.act-btn:hover { color: #fff; border-color: var(--accent); background: rgba(99,102,241,0.1); }
+.act-btn.danger:hover { color: var(--accent-rose); border-color: var(--accent-rose); background: rgba(244,63,94,0.08); }
+
+.terminal-wrapper {
+    background: rgba(8, 9, 13, 0.95); border: 1px solid var(--border); border-radius: var(--radius);
+    flex: 1; display: flex; flex-direction: column; min-height: 380px; overflow: hidden;
+}
+.terminal-header {
+    padding: 10px 16px; border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent-cyan);
+    display: flex; justify-content: space-between; align-items: center;
+    background: rgba(0,0,0,0.2);
+}
+.terminal-body { padding: 14px 16px; overflow-y: auto; flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.9; }
+.log-line { margin-bottom: 3px; display: flex; gap: 10px; word-break: break-all; }
+.log-ts { color: var(--text-muted); flex-shrink: 0; }
+.log-msg { color: var(--text-dim); }
+.log-msg.success { color: var(--accent-green); }
+.log-msg.warning { color: var(--accent-amber); }
+.log-msg.error { color: var(--accent-rose); }
+
+.modal-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: center; padding: 16px;
+}
+.modal-overlay.hidden { display: none; }
+.modal-card {
+    background: #0f1116;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 26px;
+    border-radius: 14px;
+    width: 100%; max-width: 420px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(99,102,241,0.08);
+    position: relative;
+    color: #e8eaed;
+}
+.modal-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    border-radius: 14px 14px 0 0;
+}
+
+.input-group { margin-bottom: 14px; }
+.input-group label {
+    display: block; font-size: 10px; font-weight: 700;
+    color: #7c8291; margin-bottom: 6px;
+    text-transform: uppercase; letter-spacing: 1px;
+}
+.input-group input, .input-group textarea, .input-group select {
+    width: 100%;
+    padding: 11px 12px;
+    border-radius: 8px;
+    background: #16181f;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    outline: none;
+    transition: 0.2s ease;
+    -webkit-appearance: none;
+    appearance: none;
+}
+.input-group input::placeholder, .input-group textarea::placeholder { color: #565b69; }
+.input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+    border-color: #6366f1;
+    background: #1a1d26;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+}
+.input-group textarea { resize: vertical; min-height: 80px; font-family: 'JetBrains Mono', monospace; line-height: 1.5; }
+
+.toast-container { position: fixed; bottom: 20px; left: 20px; z-index: 300; display: flex; flex-direction: column; gap: 8px; }
+.toast {
+    background: rgba(15, 17, 22, 0.98); border: 1px solid var(--border-strong);
+    border-right: 3px solid var(--accent); padding: 11px 16px; border-radius: var(--radius-sm);
+    font-size: 12px; color: #fff; box-shadow: var(--shadow-lg);
+    animation: slideIn 0.25s ease; min-width: 200px;
+}
+@keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+.toast.success { border-right-color: var(--accent-green); }
+.toast.error { border-right-color: var(--accent-rose); }
+.toast.info { border-right-color: var(--accent-cyan); }
+
+.badge-dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+
+@media(max-width: 820px) {
+    .main-wrapper { padding: 14px; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .node-grid { grid-template-columns: 1fr; }
+    .page-title { font-size: 19px; }
+    .stat-val { font-size: 22px; }
+}
+</style>
+</head>
+<body>
+
+<div class="ambient-bg">
+    <div class="grid-overlay"></div>
+</div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+    <div class="brand">
+        <div class="brand-icon"><i class="fa-solid fa-bolt"></i></div>
+        <div>
+            <div class="brand-name">PREX</div>
+            <div class="brand-sub">Level Up Booster</div>
+        </div>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+        <button class="btn" onclick="openAddModal()"><i class="fa-solid fa-plus"></i> إضافة حساب</button>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="main-wrapper">
+
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">لوحة التحكم</h1>
+            <p class="page-subtitle">رفع اللفل التلقائي</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+            <button class="btn" onclick="togglePauseAll()"><i class="fa-solid fa-pause"></i> إيقاف الكل</button>
+            <button class="btn btn-primary" onclick="fetchStats()"><i class="fa-solid fa-rotate"></i> تحديث</button>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">الحسابات النشطة</div>
+            <div class="stat-val" id="stat-accounts">0</div>
+        </div>
+        <div class="stat-card cyan">
+            <div class="stat-label">المباريات المكتملة</div>
+            <div class="stat-val" id="stat-matches">0</div>
+        </div>
+        <div class="stat-card green">
+            <div class="stat-label">الخبرة المكتسبة</div>
+            <div class="stat-val" id="stat-exp">+0</div>
+        </div>
+        <div class="stat-card rose">
+            <div class="stat-label">الحالة</div>
+            <div class="stat-val" id="stat-status">--</div>
+        </div>
+    </div>
+
+    <div class="node-grid" id="accounts-container">
+        <div style="grid-column: 1/-1; text-align:center; padding: 40px; color: var(--text-dim);">
+            <i class="fa-solid fa-circle-notch fa-spin" style="font-size:20px; color:var(--accent); margin-bottom:10px;"></i>
+            <p>جاري التحميل...</p>
+        </div>
+    </div>
+
+    <!-- Console -->
+    <div class="terminal-wrapper" style="margin-top:20px;">
+        <div class="terminal-header">
+            <span>prex@booster:~#</span>
+            <span style="color:var(--accent-green); font-size:10px; display:flex; align-items:center; gap:6px;">
+                <span class="badge-dot" style="background:var(--accent-green); box-shadow:0 0 6px var(--accent-green);"></span> LIVE
+            </span>
+        </div>
+        <div class="terminal-body" id="console-stream"></div>
+    </div>
+</div>
+
+<!-- ADD ACCOUNT MODAL (يفتح تلقائياً) -->
+<div class="modal-overlay" id="addModal">
+    <div class="modal-card">
+        <h2 style="font-size:18px; font-weight:800; margin-bottom:6px; color:#fff; text-align:center;">
+            <i class="fa-solid fa-rocket" style="color:var(--accent);"></i> ابدأ رفع اللفل
+        </h2>
+        <p style="font-size:11px; color:var(--text-dim); margin-bottom:18px; text-align:center;">
+            أدخل بيانات الحساب ليبدأ البوت بالعمل فوراً
+        </p>
+
+        <form onsubmit="submitAddAccount(event)">
+            <div class="input-group">
+                <label>طريقة الدخول</label>
+                <select id="acc-type" onchange="toggleFormType()">
+                    <option value="guest">UID + كلمة المرور</option>
+                    <option value="token">Access Token مباشر</option>
+                </select>
+            </div>
+
+            <div id="guest-inputs">
+                <div class="input-group">
+                    <label>Free Fire UID</label>
+                    <input type="text" id="acc-uid" placeholder="مثال: 100067890" autocomplete="off">
+                </div>
+                <div class="input-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="acc-password" placeholder="••••••••••••" autocomplete="off">
+                </div>
+            </div>
+
+            <div id="token-inputs" style="display:none;">
+                <div class="input-group">
+                    <label>Access Token</label>
+                    <textarea id="acc-token" placeholder="الصق التوكن هنا..." rows="4"></textarea>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; padding:12px; font-size:13px; margin-top:8px;">
+                <i class="fa-solid fa-play"></i> بدء الرفع
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="toast-container" id="toastBox"></div>
+
+<script>
+/* ================= Toast ================= */
+function toast(msg, type = "info") {
+    const box = document.getElementById('toastBox');
+    const t = document.createElement('div');
+    t.className = 'toast ' + type;
+    t.innerText = msg;
+    box.appendChild(t);
+    setTimeout(() => {
+        t.style.opacity = '0';
+        t.style.transition = 'all 0.3s ease';
+        setTimeout(() => t.remove(), 300);
+    }, 3200);
+}
+
+/* ================= Modal ================= */
+function openAddModal() {
+    document.getElementById('addModal').classList.remove('hidden');
+}
+function closeAddModal() {
+    document.getElementById('addModal').classList.add('hidden');
+}
+function toggleFormType() {
+    const t = document.getElementById('acc-type').value;
+    document.getElementById('guest-inputs').style.display = t === 'guest' ? 'block' : 'none';
+    document.getElementById('token-inputs').style.display = t === 'token' ? 'block' : 'none';
+}
+
+/* ================= Add Account ================= */
+async function submitAddAccount(e) {
+    e.preventDefault();
+    const type = document.getElementById('acc-type').value;
+    let payload = {};
+
+    if (type === 'guest') {
+        const uid = document.getElementById('acc-uid').value.trim();
+        const pwd = document.getElementById('acc-password').value.trim();
+        if (!uid || !pwd) { toast("UID وكلمة المرور مطلوبين", "error"); return; }
+        payload = { uid, password: pwd };
+    } else {
+        const token = document.getElementById('acc-token').value.trim();
+        if (!token) { toast("التوكن مطلوب", "error"); return; }
+        payload = { token };
+    }
+
+    try {
+        const r = await fetch('/api/account/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const d = await r.json();
+        if (d.status === 'ok') {
+            closeAddModal();
+            toast("تم إضافة الحساب وبدأ الرفع", "success");
+            fetchStats();
+        } else {
+            toast(d.error || "فشل الإضافة", "error");
+        }
+    } catch (err) {
+        toast("خطأ في الاتصال بالسيرفر", "error");
+    }
+}
+
+/* ================= Stats ================= */
+async function fetchStats() {
+    try {
+        const r = await fetch('/api/stats');
+        if (!r.ok) return;
+        const d = await r.json();
+
+        document.getElementById('stat-accounts').innerText = d.total_accounts || 0;
+        document.getElementById('stat-matches').innerText = d.total_matches || 0;
+        document.getElementById('stat-exp').innerText = '+' + Number(d.total_gained_exp || 0).toLocaleString();
+        document.getElementById('stat-status').innerText = d.total_accounts > 0 ? 'يعمل' : 'متوقف';
+
+        renderAccounts(d.accounts || []);
+        renderLogs(d.logs || []);
+    } catch (e) {}
+}
+
+function renderAccounts(accounts) {
+    const box = document.getElementById('accounts-container');
+    if (!accounts || accounts.length === 0) {
+        box.innerHTML = `
+            <div style="grid-column:1/-1; text-align:center; padding:50px 20px; color:var(--text-dim);">
+                <i class="fa-solid fa-server" style="font-size:28px; color:var(--text-muted); margin-bottom:14px;"></i>
+                <p style="font-size:13px;">ما في حسابات مضافة.</p>
+                <button class="btn btn-primary" style="margin-top:14px;" onclick="openAddModal()">إضافة حساب</button>
+            </div>`;
+        return;
+    }
+
+    box.innerHTML = accounts.map(acc => {
+        const paused = acc.is_paused || acc.status === "PAUSED";
+        const stColor = paused ? "var(--text-dim)" : "var(--accent-green)";
+        const stBg = paused ? "rgba(124,130,145,0.08)" : "rgba(16,185,129,0.08)";
+        const stBorder = paused ? "rgba(124,130,145,0.2)" : "rgba(16,185,129,0.25)";
+        return `
+            <div class="node-card">
+                <div class="acc-head">
+                    <div class="acc-id">
+                        <div class="acc-avatar"><i class="fa-solid fa-robot"></i></div>
+                        <div style="min-width:0;">
+                            <div class="acc-name">${acc.nickname || 'Player'}</div>
+                            <div style="font-size:10px; color:var(--text-muted); font-family:'JetBrains Mono',monospace;">UID: ${acc.uid}</div>
+                        </div>
+                    </div>
+                    <div class="status-badge" style="color:${stColor}; background:${stBg}; border-color:${stBorder};">
+                        ${paused ? 'متوقف' : (acc.status || 'يعمل')}
+                    </div>
+                </div>
+
+                <div class="acc-metrics">
+                    <div class="metric-box"><span>اللفل</span><strong>${acc.level || 1}</strong></div>
+                    <div class="metric-box"><span>الخبرة</span><strong>${Number(acc.current_exp || 0).toLocaleString()}</strong></div>
+                    <div class="metric-box"><span>المكتسب</span><strong style="color:var(--accent-green);">+${Number(acc.gained_exp || 0).toLocaleString()}</strong></div>
+                </div>
+
+                <div style="font-size:10px; color:var(--text-muted); display:flex; justify-content:space-between; margin-bottom:4px;">
+                    <span>التقدم للفل ${(acc.level || 1) + 1}</span>
+                    <span style="font-family:'JetBrains Mono',monospace;">${acc.progress_pct || 0}%</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill" style="width:${acc.progress_pct || 0}%"></div></div>
+
+                <div class="acc-foot">
+                    <span style="font-size:10px; color:var(--text-muted); font-family:'JetBrains Mono',monospace;">
+                        <i class="fa-solid fa-gamepad"></i> ${acc.matches_played || 0} مباراة
+                    </span>
+                    <div style="display:flex; gap:6px;">
+                        <button class="act-btn" onclick="togglePause('${acc.uid}')" title="${paused ? 'استئناف' : 'إيقاف'}">
+                            <i class="fa-solid ${paused ? 'fa-play' : 'fa-pause'}"></i>
+                        </button>
+                        <button class="act-btn danger" onclick="deleteAccount('${acc.uid}')" title="حذف">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+    }).join('');
+}
+
+function renderLogs(logs) {
+    const stream = document.getElementById('console-stream');
+    if (!logs || logs.length === 0) return;
+    stream.innerHTML = logs.map(l => `
+        <div class="log-line">
+            <span class="log-ts">[${l.time}]</span>
+            <span class="log-msg ${l.level || 'info'}">&gt; ${l.message}</span>
+        </div>
+    `).join('');
+    stream.scrollTop = stream.scrollHeight;
+}
+
+/* ================= Pause / Delete ================= */
+async function togglePause(uid) {
+    try {
+        const r = await fetch('/api/account/pause', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ uid })
+        });
+        const d = await r.json();
+        if (d.status === 'ok') {
+            toast(d.is_paused ? "تم الإيقاف" : "تم الاستئناف", "info");
+            fetchStats();
+        }
+    } catch (e) { toast("خطأ", "error"); }
+}
+
+async function togglePauseAll() {
+    try {
+        const r = await fetch('/api/account/pause_all', { method: 'POST' });
+        const d = await r.json();
+        if (d.status === 'ok') {
+            toast(d.all_paused ? "تم إيقاف الكل" : "تم استئناف الكل", "info");
+            fetchStats();
+        }
+    } catch (e) { toast("خطأ", "error"); }
+}
+
+async function deleteAccount(uid) {
+    if (!confirm('حذف الحساب ' + uid + '؟')) return;
+    try {
+        const r = await fetch('/api/account/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ uid })
+        });
+        const d = await r.json();
+        if (d.status === 'ok') {
+            toast("تم الحذف", "success");
+            fetchStats();
+        }
+    } catch (e) { toast("خطأ", "error"); }
+}
+
+/* ================= Auto start ================= */
+window.addEventListener('DOMContentLoaded', () => {
+    openAddModal();   // يفتح المودال مباشرة عند تحميل الصفحة
+    fetchStats();
+    setInterval(fetchStats, 3000);
+});
+</script>
+</body>
+</html>
